@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZagorjeTrendShop</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #00ff88;
+    --bg: #0a0a0a;
+    --bg2: #111;
+    --bg3: #1a1a1a;
+    --border: #222;
+    --text: #f0f0f0;
+    --muted: #777;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,10,0.97); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; height: 64px;
+  }
+  .nav-logo { font-size: 19px; font-weight: 800; color: var(--green); }
+  .nav-links { display: flex; list-style: none; gap: 4px; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 20px; transition: all .2s; }
+  .nav-links a:hover { color: var(--green); background: rgba(0,255,136,.08); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; }
+  .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(10,10,10,.98); border-bottom: 1px solid var(--border); padding: 16px 24px; z-index: 99; flex-direction: column; gap: 4px; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { color: var(--text); text-decoration: none; padding: 12px 0; font-size: 15px; font-weight: 500; border-bottom: 1px solid var(--border); }
+  .mobile-menu a:last-child { border-bottom: none; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 80px 24px 60px; background: radial-gradient(ellipse at 50% 0%, rgba(0,255,136,.07) 0%, transparent 70%); border-bottom: 1px solid var(--border); }
+  .hero-badge { display: inline-block; background: rgba(0,255,136,.1); border: 1px solid rgba(0,255,136,.3); color: var(--green); font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(34px, 6vw, 68px); font-weight: 800; letter-spacing: -1px; line-height: 1.1; margin-bottom: 14px; }
+  .hero h1 span { color: var(--green); }
+  .hero p { color: var(--muted); font-size: 15px; max-width: 420px; margin: 0 auto 28px; }
+  .hero-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--green); color: #000; font-weight: 700; font-size: 14px; padding: 13px 26px; border-radius: 50px; text-decoration: none; transition: all .2s; }
+  .hero-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,255,136,.2); }
+
+  /* SECTIONS */
+  .section { padding: 56px 24px; max-width: 1200px; margin: 0 auto; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+  .section-icon { font-size: 24px; }
+  .section-title { font-size: 19px; font-weight: 700; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* GRID */
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+
+  /* CARD */
+  .product-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; cursor: pointer; transition: all .25s; }
+  .product-card:hover { transform: translateY(-4px); border-color: rgba(0,255,136,.4); box-shadow: 0 12px 32px rgba(0,0,0,.5); }
+  .card-visual { height: 190px; overflow: hidden; position: relative; background: #0d0d0d; }
+  .card-visual img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; display: block; }
+  .product-card:hover .card-visual img { transform: scale(1.07); }
+  .card-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,.65); border: 1px solid rgba(255,255,255,.1); color: #fff; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 10px; backdrop-filter: blur(6px); }
+  .card-hot { position: absolute; top: 10px; right: 10px; background: var(--green); color: #000; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; }
+  .card-body { padding: 13px 15px 15px; }
+  .card-name { font-size: 14px; font-weight: 700; margin-bottom: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-cta { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--green); font-weight: 600; }
+  .card-arrow { width: 26px; height: 26px; background: rgba(0,255,136,.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all .2s; }
+  .product-card:hover .card-arrow { background: var(--green); color: #000; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 1000; backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 16px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg2); border: 1px solid #2a2a2a; border-radius: 20px; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; position: relative; animation: modalIn .22s ease; }
+  @keyframes modalIn { from { opacity:0; transform: scale(.94) translateY(12px); } to { opacity:1; transform: scale(1) translateY(0); } }
+  .modal-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; background: rgba(0,0,0,.6); border: 1px solid #333; color: #fff; font-size: 16px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all .2s; }
+  .modal-close:hover { background: #333; color: var(--green); }
+
+  /* GALLERY */
+  .gallery-main { width: 100%; height: 270px; overflow: hidden; border-radius: 20px 20px 0 0; background: #0d0d0d; }
+  .gallery-main img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s ease; }
+  .gallery-section { background: #0d0d0d; padding: 10px 14px 14px; }
+  .gallery-label { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .gallery-thumbs { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; }
+  .gallery-thumbs::-webkit-scrollbar { display: none; }
+  .gallery-thumb { width: 68px; height: 54px; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; opacity: .5; transition: all .2s; }
+  .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-thumb:hover { opacity: .8; }
+  .gallery-thumb.active { border-color: var(--green); opacity: 1; }
+
+  /* MODAL BODY */
+  .modal-body { padding: 18px 22px 22px; }
+  .modal-category { font-size: 11px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+  .modal-name { font-size: 22px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 16px; line-height: 1.2; }
+  .modal-divider { height: 1px; background: var(--border); margin-bottom: 16px; }
+  .btn-dm { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--green); color: #000; font-weight: 700; font-size: 14px; padding: 14px; border-radius: 12px; text-decoration: none; transition: all .2s; }
+  .btn-dm:hover { background: #00e676; transform: translateY(-1px); }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); background: var(--bg2); padding: 40px 24px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.9; }
+  footer strong { display: block; color: var(--text); font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+  footer a { color: var(--green); text-decoration: none; }
+  .footer-warning { margin-top: 14px; font-size: 11px; color: #444; }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .product-grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .hero { padding: 48px 20px 36px; }
+    .section { padding: 36px 16px; }
+    .gallery-main { height: 220px; }
+  }
+  @media (max-width: 380px) { .product-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">ZagorjeTrendShop</div>
+  <ul class="nav-links">
+    <li><a href="#popularno">🔥 Popularno</a></li>
+    <li><a href="#tenisice">👟 Tenisice</a></li>
+    <li><a href="#jordan">🏀 Jordan</a></li>
+    <li><a href="#sport">⚽ Sport</a></li>
+    <li><a href="#designer">💎 Designer</a></li>
+    <li><a href="#natikace">🩴 Natikače</a></li>
+    <li><a href="#dodaci">🧢 Dodaci</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#popularno" onclick="closeMenu()">🔥 Popularno</a>
+  <a href="#tenisice" onclick="closeMenu()">👟 Tenisice</a>
+  <a href="#jordan" onclick="closeMenu()">🏀 Jordan</a>
+  <a href="#sport" onclick="closeMenu()">⚽ Sport</a>
+  <a href="#designer" onclick="closeMenu()">💎 Designer</a>
+  <a href="#natikace" onclick="closeMenu()">🩴 Natikače</a>
+  <a href="#dodaci" onclick="closeMenu()">🧢 Dodaci</a>
+</div>
+
+<section class="hero">
+  <div class="hero-badge">Premium Kolekcija</div>
+  <h1>Zagorje<span>Trend</span>Shop</h1>
+  <p>Pregledaj dostupne modele i naruči putem DM-a na Instagramu.</p>
+  <p>Neki modeli možda nisu dostupni na ovoj stranici.</p>
+  <a href="https://www.instagram.com/zagorjetrendshop/" target="_blank" class="hero-btn">📩 Kontaktiraj nas na Instagramu</a>
+</section>
+
+<!-- POPULARNO -->
+<div class="section" id="popularno">
+  <div class="section-header">
+    <div class="section-icon">🔥</div>
+    <div class="section-title">Popularno</div>
+    <div class="section-line"></div>
+  </div>
+  <div class="product-grid">
+
+    <div class="product-card" onclick="openModal('nb9060')">
+      <div class="card-visual">
+        <img src="images/nb_1.jpg" alt="New Balance 9060" loading="lazy">
+        <div class="card-badge">New Balance</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">New Balance 9060</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('niketn')">
+      <div class="card-visual">
+        <img src="images/tn_1.jpg" alt="Nike TN DN" loading="lazy">
+        <div class="card-badge">Nike</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Nike TN / DN</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('jordan4')">
+      <div class="card-visual">
+        <img src="images/j4_1.jpg" alt="Jordan 4" loading="lazy">
+        <div class="card-badge">Jordan</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Jordan 4</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('jordan11')">
+      <div class="card-visual">
+        <img src="images/aj11_1.jpg" alt="Jordan 11" loading="lazy">
+        <div class="card-badge">Jordan</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Jordan 11</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('yeezy')">
+      <div class="card-visual">
+        <img src="images/yz_1.jpg" alt="Yeezy 350 V2" loading="lazy">
+        <div class="card-badge">Adidas</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Yeezy 350 V2</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('af1')">
+      <div class="card-visual">
+        <img src="images/af1_1.jpg" alt="Nike Air Force 1" loading="lazy">
+        <div class="card-badge">Nike</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Nike Air Force 1</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('dunk')">
+      <div class="card-visual">
+        <img src="images/dn_1.jpg" alt="Nike Dunk SB" loading="lazy">
+        <div class="card-badge">Nike</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Nike Dunk SB</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TENISICE -->
+<div class="section" id="tenisice">
+  <div class="section-header">
+    <div class="section-icon">👟</div>
+    <div class="section-title">Tenisice</div>
+    <div class="section-line"></div>
+  </div>
+  <div class="product-grid">
+
+    <div class="product-card" onclick="openModal('nb1000')">
+      <div class="card-visual">
+        <img src="images/nb1000_1.jpg" alt="New Balance 1000" loading="lazy">
+        <div class="card-badge">New Balance</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">New Balance 1000</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('nb9060x')">
+      <div class="card-visual">
+        <img src="images/nb9060x_1.jpg" alt="New Balance 9060X" loading="lazy">
+        <div class="card-badge">New Balance</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">New Balance 9060X</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('premiata')">
+      <div class="card-visual">
+        <img src="images/pm_1.jpg" alt="Premiata" loading="lazy">
+        <div class="card-badge">Premiata</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Premiata</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('asicskayo')">
+      <div class="card-visual">
+        <img src="images/as_kayo_1.jpg" alt="Asics Gel-Kayano 14" loading="lazy">
+        <div class="card-badge">Asics</div>
+        <div class="card-hot">NEW</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Asics Gel-Kayano 14</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('asicsnyc')">
+      <div class="card-visual">
+        <img src="images/as_nyc_1.jpg" alt="Asics Gel-NYC" loading="lazy">
+        <div class="card-badge">Asics</div>
+        <div class="card-hot">NEW</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Asics Gel-NYC</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('asics1130')">
+      <div class="card-visual">
+        <img src="images/as_1130_1.jpg" alt="Asics Gel-1130" loading="lazy">
+        <div class="card-badge">Asics</div>
+        <div class="card-hot">NEW</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Asics Gel-1130</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('samba')">
+      <div class="card-visual">
+        <img src="images/sam_1.jpg" alt="Adidas Samba" loading="lazy">
+        <div class="card-badge">Adidas</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Adidas Samba</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('yeezy700')">
+      <div class="card-visual">
+        <img src="images/y700_1.jpg" alt="Yeezy 700" loading="lazy">
+        <div class="card-badge">Adidas</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Yeezy 700</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('ultraboost')">
+      <div class="card-visual">
+        <img src="images/ub_1.jpg" alt="Adidas UltraBoost" loading="lazy">
+        <div class="card-badge">Adidas</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Adidas UltraBoost</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('kobe')">
+      <div class="card-visual">
+        <img src="images/kobe_1.jpg" alt="Nike Kobe" loading="lazy">
+        <div class="card-badge">Nike</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Nike Kobe</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('pippen')">
+      <div class="card-visual">
+        <img src="images/pip_1.jpg" alt="Nike Pippen" loading="lazy">
+        <div class="card-badge">Nike</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Nike Pippen</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('mihara')">
+      <div class="card-visual">
+        <img src="images/mih_1.jpg" alt="Mihara Yasuhiro" loading="lazy">
+        <div class="card-badge">Mihara</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Mihara Yasuhiro</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- JORDAN -->
+<div class="section" id="jordan">
+  <div class="section-header">
+    <div class="section-icon">🏀</div>
+    <div class="section-title">Jordan</div>
+    <div class="section-line"></div>
+  </div>
+  <div class="product-grid">
+
+    <div class="product-card" onclick="openModal('jordan1')">
+      <div class="card-visual">
+        <img src="images/j1_1.jpg" alt="Jordan 1 Low" loading="lazy">
+        <div class="card-badge">Jordan</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Jordan 1 Low</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('jordan3')">
+      <div class="card-visual">
+        <img src="images/j3_1.jpg" alt="Jordan 3" loading="lazy">
+        <div class="card-badge">Jordan</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Jordan 3</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('jordan5')">
+      <div class="card-visual">
+        <img src="images/j5_1.jpg" alt="Jordan 5" loading="lazy">
+        <div class="card-badge">Jordan</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Jordan 5</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('jordan6')">
+      <div class="card-visual">
+        <img src="images/j6_1.jpg" alt="Jordan 6" loading="lazy">
+        <div class="card-badge">Jordan</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Jordan 6</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('jordan12')">
+      <div class="card-visual">
+        <img src="images/j12_1.jpg" alt="Jordan 12" loading="lazy">
+        <div class="card-badge">Jordan</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Jordan 12</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('jordan13')">
+      <div class="card-visual">
+        <img src="images/j13_1.jpg" alt="Jordan 13" loading="lazy">
+        <div class="card-badge">Jordan</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Jordan 13</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SPORT -->
+<div class="section" id="sport">
+  <div class="section-header">
+    <div class="section-icon">⚽</div>
+    <div class="section-title">Sport</div>
+    <div class="section-line"></div>
+  </div>
+  <div class="product-grid">
+
+    <div class="product-card" onclick="openModal('football')">
+      <div class="card-visual">
+        <img src="images/fb_1.jpg" alt="Nogometne kopačke" loading="lazy">
+        <div class="card-badge">Football</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Nogometne kopačke</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DESIGNER -->
+<div class="section" id="designer">
+  <div class="section-header">
+    <div class="section-icon">💎</div>
+    <div class="section-title">Designer</div>
+    <div class="section-line"></div>
+  </div>
+  <div class="product-grid">
+
+    <div class="product-card" onclick="openModal('balenciaga')">
+      <div class="card-visual">
+        <img src="images/bl_1.jpg" alt="Balenciaga" loading="lazy">
+        <div class="card-badge">Balenciaga</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Balenciaga</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('gucci')">
+      <div class="card-visual">
+        <img src="images/gc_1.jpg" alt="Gucci" loading="lazy">
+        <div class="card-badge">Gucci</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Gucci Dirty Shoe</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('lvsnk')">
+      <div class="card-visual">
+        <img src="images/lvs_1.jpg" alt="Louis Vuitton Sneakers" loading="lazy">
+        <div class="card-badge">Louis Vuitton</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">LV Sneakers</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('prada')">
+      <div class="card-visual">
+        <img src="images/pr_1.jpg" alt="Prada" loading="lazy">
+        <div class="card-badge">Prada</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Prada</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('offwhite')">
+      <div class="card-visual">
+        <img src="images/ow_1.jpg" alt="Off-White" loading="lazy">
+        <div class="card-badge">Off-White</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Off-White</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('lanvin')">
+      <div class="card-visual">
+        <img src="images/lan_1.jpg" alt="Lanvin" loading="lazy">
+        <div class="card-badge">Lanvin</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Lanvin</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NATIKACE -->
+<div class="section" id="natikace">
+  <div class="section-header">
+    <div class="section-icon">🩴</div>
+    <div class="section-title">Natikače</div>
+    <div class="section-line"></div>
+  </div>
+  <div class="product-grid">
+
+    <div class="product-card" onclick="openModal('slbal')">
+      <div class="card-visual">
+        <img src="images/sl_bal_1.jpg" alt="Balenciaga Slides" loading="lazy">
+        <div class="card-badge">Balenciaga</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Balenciaga Slides</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('slnik')">
+      <div class="card-visual">
+        <img src="images/sl_nik_1.jpg" alt="Nike Slides" loading="lazy">
+        <div class="card-badge">Nike</div>
+        <div class="card-hot">HOT</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Nike Slides</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('slcrocs')">
+      <div class="card-visual">
+        <img src="images/sl_crocs_1.jpg" alt="BAPE x Crocs" loading="lazy">
+        <div class="card-badge">BAPE x Crocs</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">BAPE x Crocs</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+    <div class="product-card" onclick="openModal('sllv')">
+      <div class="card-visual">
+        <img src="images/sl_lv_1.jpg" alt="LV Slides" loading="lazy">
+        <div class="card-badge">Louis Vuitton</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">LV Slides</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DODACI -->
+<div class="section" id="dodaci">
+  <div class="section-header">
+    <div class="section-icon">🧢</div>
+    <div class="section-title">Dodaci</div>
+    <div class="section-line"></div>
+  </div>
+  <div class="product-grid">
+
+    <div class="product-card" onclick="openModal('kape')">
+      <div class="card-visual">
+        <img src="images/cp_1.jpg" alt="Kape" loading="lazy">
+        <div class="card-badge">Caps</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Kape</div>
+        <div class="card-cta"><span>Pogledaj boje</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <strong>ZagorjeTrendShop</strong>
+  Naruči putem DM-a na Instagramu:
+  <a href="https://www.instagram.com/zagorjetrendshop/" target="_blank">@zagorjetrendshop</a>
+  <div class="footer-warning">⚠️ Stranica je isključivo za pregled kolekcije. Nema povrata. Provjeri model prije narudžbe.</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="gallery-main">
+      <img id="galleryMainImg" src="" alt="">
+    </div>
+    <div class="gallery-section">
+      <div class="gallery-label">Ostale boje / modeli</div>
+      <div class="gallery-thumbs" id="galleryThumbs"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-category" id="modalCategory"></div>
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-divider"></div>
+      <a href="https://www.instagram.com/zagorjetrendshop/" target="_blank" class="btn-dm">
+        📩 Javi se u DM za narudžbu
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+const P = {
+  nb9060: {
+    name: 'New Balance 9060', category: 'Popularno',
+    imgs: ['nb_1','nb_2','nb_3','nb_4','nb_5','nb_6','nb_7','nb_8','nb_9','nb_10','nb_11','nb_12']
+  },
+  niketn: {
+    name: 'Nike TN / DN', category: 'Popularno',
+    imgs: ['tn_1','tn_2','tn_3','tn_4','tn_5','tn_6','tn_7','tn_8','tn_9','tn_10','tn_11','tn_12']
+  },
+  jordan4: {
+    name: 'Jordan 4', category: 'Popularno',
+    imgs: ['j4_1','j4_2','j4_3','j4_4','j4_5','j4_6','j4_7','j4_8','j4_9','j4_10','j4_11','j4_12','j4_13','j4_14','j4_15']
+  },
+  jordan11: {
+    name: 'Jordan 11', category: 'Popularno',
+    imgs: ['aj11_1','aj11_2','aj11_3','aj11_4','aj11_5','aj11_6','aj11_7','aj11_8','aj11_9','aj11_10','aj11_11','aj11_12']
+  },
+  yeezy: {
+    name: 'Yeezy 350 V2', category: 'Adidas',
+    imgs: ['yz_1','yz_2','yz_3','yz_4','yz_5','yz_6','yz_7','yz_8','yz_9','yz_10','yz_11','yz_12']
+  },
+  nb1000: {
+    name: 'New Balance 1000', category: 'Tenisice',
+    imgs: ['nb1000_1','nb1000_2','nb1000_3','nb1000_4','nb1000_5','nb1000_6','nb1000_7','nb1000_8','nb1000_9','nb1000_10']
+  },
+  nb9060x: {
+    name: 'New Balance 9060X', category: 'Tenisice',
+    imgs: ['nb9060x_1','nb9060x_2','nb9060x_3','nb9060x_4','nb9060x_5','nb9060x_6']
+  },
+  premiata: {
+    name: 'Premiata', category: 'Tenisice',
+    imgs: ['pm_1','pm_2','pm_3','pm_4','pm_5','pm_6','pm_7','pm_8','pm_9','pm_10']
+  },
+  football: {
+    name: 'Nogometne kopačke', category: 'Sport',
+    imgs: ['fb_1','fb_2','fb_3','fb_4','fb_5','fb_6','fb_7','fb_8','fb_9','fb_10']
+  },
+  balenciaga: {
+    name: 'Balenciaga', category: 'Designer',
+    imgs: ['bl_1','bl_2','bl_3','bl_4','bl_5','bl_6','bl_7','bl_8','bl_9','bl_10']
+  },
+  slbal: {
+    name: 'Balenciaga Slides', category: 'Natikače',
+    imgs: ['sl_bal_1','sl_bal_2','sl_bal_3','sl_bal_4','sl_bal_5']
+  },
+  slnik: {
+    name: 'Nike Slides', category: 'Natikače',
+    imgs: ['sl_nik_1','sl_nik_2','sl_nik_3','sl_nik_4','sl_nik_5','sl_nik_6','sl_nik_7','sl_nik_8','sl_nik_9','sl_nik_10']
+  },
+  asicskayo: {
+    name: 'Asics Gel-Kayano 14', category: 'Tenisice',
+    imgs: ['as_kayo_1','as_kayo_2','as_kayo_3','as_kayo_4','as_kayo_5']
+  },
+  asicsnyc: {
+    name: 'Asics Gel-NYC', category: 'Tenisice',
+    imgs: ['as_nyc_1','as_nyc_2','as_nyc_3','as_nyc_4','as_nyc_5','as_nyc_6']
+  },
+  asics1130: {
+    name: 'Asics Gel-1130', category: 'Tenisice',
+    imgs: ['as_1130_1','as_1130_2','as_1130_3','as_1130_4']
+  },
+  af1: {
+    name: 'Nike Air Force 1', category: 'Popularno',
+    imgs: ['af1_1','af1_2','af1_3','af1_4','af1_5','af1_6','af1_7','af1_8']
+  },
+  dunk: {
+    name: 'Nike Dunk SB', category: 'Popularno',
+    imgs: ['dn_1']
+  },
+  samba: {
+    name: 'Adidas Samba', category: 'Tenisice',
+    imgs: ['sam_1','sam_2','sam_3','sam_4','sam_5','sam_6','sam_7','sam_8','sam_9','sam_10','sam_11']
+  },
+  yeezy700: {
+    name: 'Yeezy 700', category: 'Tenisice',
+    imgs: ['y700_1','y700_2']
+  },
+  ultraboost: {
+    name: 'Adidas UltraBoost', category: 'Tenisice',
+    imgs: ['ub_1','ub_2','ub_3','ub_4','ub_5','ub_6','ub_7','ub_8']
+  },
+  kobe: {
+    name: 'Nike Kobe', category: 'Tenisice',
+    imgs: ['kobe_1','kobe_2']
+  },
+  pippen: {
+    name: 'Nike Pippen', category: 'Tenisice',
+    imgs: ['pip_1','pip_2','pip_3','pip_4','pip_5','pip_6','pip_7','pip_8','pip_9']
+  },
+  mihara: {
+    name: 'Mihara Yasuhiro', category: 'Tenisice',
+    imgs: ['mih_1','mih_2','mih_3','mih_4','mih_5','mih_6']
+  },
+  jordan1: {
+    name: 'Jordan 1 Low', category: 'Jordan',
+    imgs: ['j1_1','j1_2']
+  },
+  jordan3: {
+    name: 'Jordan 3', category: 'Jordan',
+    imgs: ['j3_1','j3_2']
+  },
+  jordan5: {
+    name: 'Jordan 5', category: 'Jordan',
+    imgs: ['j5_1','j5_2','j5_3','j5_4','j5_5','j5_6','j5_7','j5_8','j5_9','j5_10','j5_11','j5_12']
+  },
+  jordan6: {
+    name: 'Jordan 6', category: 'Jordan',
+    imgs: ['j6_1','j6_2','j6_3','j6_4','j6_5','j6_6','j6_7','j6_8']
+  },
+  jordan12: {
+    name: 'Jordan 12', category: 'Jordan',
+    imgs: ['j12_1','j12_2','j12_3','j12_4','j12_5']
+  },
+  jordan13: {
+    name: 'Jordan 13', category: 'Jordan',
+    imgs: ['j13_1','j13_2','j13_3','j13_4','j13_5','j13_6']
+  },
+  gucci: {
+    name: 'Gucci Dirty Shoe', category: 'Designer',
+    imgs: ['gc_1','gc_2','gc_3','gc_4','gc_5','gc_6','gc_7','gc_8','gc_9']
+  },
+  lvsnk: {
+    name: 'LV Sneakers', category: 'Designer',
+    imgs: ['lvs_1','lvs_2','lvs_3','lvs_4','lvs_5','lvs_6','lvs_7']
+  },
+  prada: {
+    name: 'Prada', category: 'Designer',
+    imgs: ['pr_1','pr_2','pr_3','pr_4','pr_5','pr_6','pr_7']
+  },
+  offwhite: {
+    name: 'Off-White', category: 'Designer',
+    imgs: ['ow_1','ow_2','ow_3','ow_4','ow_5','ow_6','ow_7','ow_8']
+  },
+  lanvin: {
+    name: 'Lanvin', category: 'Designer',
+    imgs: ['lan_1','lan_2','lan_3','lan_4','lan_5']
+  },
+  slcrocs: {
+    name: 'BAPE x Crocs', category: 'Natikače',
+    imgs: ['sl_crocs_1','sl_crocs_2','sl_crocs_3','sl_crocs_4']
+  },
+  sllv: {
+    name: 'LV Slides', category: 'Natikače',
+    imgs: ['sl_lv_1','sl_lv_2','sl_lv_3','sl_lv_4','sl_lv_5','sl_lv_6','sl_lv_7']
+  },
+  kape: {
+    name: 'Kape', category: 'Dodaci',
+    imgs: ['cp_1','cp_2','cp_3','cp_4','cp_5','cp_6','cp_7','cp_8','cp_9','cp_10','cp_11','cp_12']
+  }
+};
+
+function imgUrl(name) { return 'images/' + name + '.jpg'; }
+
+function openModal(id) {
+  const p = P[id];
+  if (!p) return;
+
+  const mainImg = document.getElementById('galleryMainImg');
+  mainImg.src = imgUrl(p.imgs[0]);
+  mainImg.alt = p.name;
+
+  document.getElementById('modalCategory').textContent = p.category;
+  document.getElementById('modalName').textContent = p.name;
+
+  const thumbsEl = document.getElementById('galleryThumbs');
+  thumbsEl.innerHTML = '';
+
+  p.imgs.forEach((name, i) => {
+    const div = document.createElement('div');
+    div.className = 'gallery-thumb' + (i === 0 ? ' active' : '');
+    div.innerHTML = '<img src="' + imgUrl(name) + '" alt="" loading="lazy">';
+    div.onclick = () => {
+      document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+      div.classList.add('active');
+      mainImg.style.opacity = '0';
+      setTimeout(() => { mainImg.src = imgUrl(name); mainImg.style.opacity = '1'; }, 150);
+    };
+    thumbsEl.appendChild(div);
+  });
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+function closeMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
